@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" 
+	xmlns="http://java.sun.com/xml/ns/j2ee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	
+	<display-name>eryansky_essh</display-name>
+	
+	<!-- Spring ApplicationContext配置文件的路径,可使用通配符,多个路径用','号分隔
+		此参数用于后面的Spring Context Loader -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+		    classpath*:applicationContext.xml,
+		    classpath*:applicationContext-ehcache.xml,
+		     classpath*:applicationContext-task.xml,
+		    <!-- classpath*:applicationContext-quartz.xml -->
+            <!--classpath*:applicationContext-minaServer.xml-->
+		</param-value>
+	</context-param>
+
+	<!-- Filter 定义  -->
+	<!-- Character Encoding filter -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	
+	<!-- Hibernate Open Session In View filter-->
+	<filter>
+		<filter-name>hibernateOpenSessionInViewFilter</filter-name>
+		<filter-class>com.eryansky.common.orm.hibernate.OpenSessionInViewFilter</filter-class>
+	</filter>
+	
+	<!-- 表单输入特殊字符Html转译、敏感词汇转译拦截器-->
+	<!-- 
+	<filter>
+		<filter-name>InputReplaceFilter</filter-name>
+		<filter-class>com.eryansky.common.web.filter.InputReplaceFilter</filter-class>
+		<init-param>
+			<param-name>file</param-name>
+			<param-value>WEB-INF/classes/sensitive.properties</param-value>
+		</init-param>
+	</filter>
+	 -->
+	
+	
+	<!-- 生产环境下使用 Response Header Added Filter -->
+	<filter>
+		<filter-name>expiresHeaderFilter</filter-name>
+		<filter-class>com.eryansky.common.web.filter.ResponseHeaderFilter</filter-class>
+		<init-param>
+			<param-name>Cache-Control</param-name>
+			<param-value>public, max-age=31536000</param-value>
+		</init-param>
+	</filter>
+	
+	 
+	<!-- ehcache Gzip过滤器 -->
+	<filter>  
+        <filter-name>gzipFilter</filter-name>  
+        <filter-class>net.sf.ehcache.constructs.web.filter.GzipFilter</filter-class>  
+    </filter>
+    
+	<!-- Struts2 filter -->
+	<filter>
+		<filter-name>struts2Filter</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+    
+	<!-- Spring监听器 Spring的ApplicationContext 载入 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- Spring 刷新Introspector防止内存泄露 -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+	
+	<!-- 系统启动监听 默认：com.eryansky.common.web.listener.DefaultSystemInitListener -->
+	<listener>
+		<listener-class>com.eryansky.listener.SystemInitListener</listener-class>
+	</listener>
+
+	<!-- Filter 映射 -->
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>hibernateOpenSessionInViewFilter</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	
+	<!-- 
+    <filter-mapping>
+		<filter-name>InputReplaceFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	 -->
+	 
+	
+	<filter-mapping>
+		<filter-name>expiresHeaderFilter</filter-name>
+		<url-pattern>/img/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>expiresHeaderFilter</filter-name>
+		<url-pattern>/css/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>expiresHeaderFilter</filter-name>
+		<url-pattern>/js/*</url-pattern>
+	</filter-mapping>
+	
+	
+	<filter-mapping>  
+        <filter-name>gzipFilter</filter-name>  
+        <url-pattern>*.css</url-pattern>  
+    </filter-mapping> 
+    <filter-mapping>  
+        <filter-name>gzipFilter</filter-name>  
+        <url-pattern>*.js</url-pattern>  
+    </filter-mapping> 
+    <filter-mapping>  
+        <filter-name>gzipFilter</filter-name>  
+        <url-pattern>*.png</url-pattern>  
+    </filter-mapping> 
+    <filter-mapping>  
+        <filter-name>gzipFilter</filter-name>  
+        <url-pattern>*.jpg</url-pattern>  
+    </filter-mapping> 
+    <filter-mapping>  
+        <filter-name>gzipFilter</filter-name>  
+        <url-pattern>*.gif</url-pattern>  
+    </filter-mapping>  
+    <filter-mapping>  
+        <filter-name>gzipFilter</filter-name>  
+        <url-pattern>*.html</url-pattern>  
+    </filter-mapping>  
+    <filter-mapping>  
+        <filter-name>gzipFilter</filter-name>  
+        <url-pattern>*.jsp</url-pattern>  
+    </filter-mapping>  
+    <filter-mapping>  
+        <filter-name>gzipFilter</filter-name>  
+        <url-pattern>*.json</url-pattern>  
+    </filter-mapping>
+	 
+	<filter-mapping>
+		<filter-name>struts2Filter</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	
+	
+	<!-- kindeditor上传 -->
+	<servlet>
+		<servlet-name>FileUploadServlet</servlet-name>
+		<servlet-class>
+		    com.eryansky.common.web.servlet.kindeditor.FileUploadServlet
+		</servlet-class>
+		<!-- 上传保存的目录 -->
+		<init-param>
+			<param-name>UPLOAD_PATH</param-name>
+			<param-value>attached/</param-value>
+		</init-param>
+		<!-- 限制上传图片的大小，单位字节(缺省值为1MB) -->
+		<init-param>
+			<param-name>Img_MAX_SIZE</param-name>
+			<param-value>1024000</param-value>
+		</init-param>
+		<init-param>
+			<!-- 上传图片的类型(缺省值为gif, jpg, jpeg, png, bmp) -->
+			<param-name>Img_YPES</param-name>
+			<param-value>gif,jpg,jpeg,png,bmp</param-value>
+		</init-param>
+		<!-- ===================================================================== -->
+		<!-- 上传附件的大小，单位字节(缺省为1MB) -->
+		<init-param>
+			<param-name>File_MAX_SIZE</param-name>
+			<param-value>1000000</param-value>
+		</init-param>
+		<!-- 上传文件的类型(缺省为doc, xls, ppt, pdf, txt, rar, zip) -->
+		<init-param>
+			<param-name>File_TYPES</param-name>
+			<param-value>doc,docx,xls,xlsx,ppt,pptx,pdf,zip,rar,txt</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>FileManagerServlet</servlet-name>
+		<servlet-class>
+			com.eryansky.common.web.servlet.kindeditor.FileManagerServlet
+		</servlet-class>
+		<!-- 上传保存的目录 -->
+		<init-param>
+			<param-name>UPLOAD_PATH</param-name>
+			<param-value>attached/</param-value>
+		</init-param>
+	</servlet>
+ 
+	<servlet-mapping>
+		<servlet-name>FileUploadServlet</servlet-name>
+		<url-pattern>/servlet/FileUploadServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FileManagerServlet</servlet-name>
+		<url-pattern>/servlet/FileManagerServlet</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 本地静态内容展示与下载的Servlet -->
+	<servlet>
+		<servlet-name>StaticContentServlet</servlet-name>
+		<servlet-class>com.eryansky.common.web.servlet.StaticContentServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>StaticContentServlet</servlet-name>
+		<url-pattern>/servlet/StaticContentServlet</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 获取远程静态内容并进行展示的Servlet -->
+	<servlet>
+		<servlet-name>RemoteContentServlet</servlet-name>
+		<servlet-class>com.eryansky.common.web.servlet.RemoteContentServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RemoteContentServlet</servlet-name>
+		<url-pattern>/servlet/RemoteContentServlet</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlet 验证码 -->
+	<servlet>
+		<servlet-name>ValidateCodeServlet</servlet-name>
+		<servlet-class>com.eryansky.common.web.servlet.ValidateCodeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ValidateCodeServlet</servlet-name>
+		<url-pattern>/servlet/ValidateCodeServlet</url-pattern>
+	</servlet-mapping>
+
+    <!--hightcharts导出下载功能-->
+    <servlet>
+        <servlet-name>DownloadChartServlet</servlet-name>
+        <servlet-class>com.eryansky.common.web.servlet.DownloadChartServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DownloadChartServlet</servlet-name>
+        <url-pattern>/servlet/DownloadChartServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <!-- session超时定义,单位为分钟 -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>/index.jsp</welcome-file>
+    </welcome-file-list>
+    
+    <!-- 出错页面定义 -->
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/common/500.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/common/500.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/common/404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/common/403.jsp</location>
+    </error-page>
+
+    <!--标签tag-->
+    <jsp-config>
+        <taglib>
+            <taglib-uri>/essh-tags</taglib-uri>
+            <taglib-location>/WEB-INF/tlds/es.tld</taglib-location>
+        </taglib>
+    </jsp-config>
+    
+    <!-- jndi数据源配置 -->
+    <!-- 
+	<resource-ref>  
+		<description>jndi数据源</description>  
+		<res-ref-name>jdbc/mysql</res-ref-name>  
+		<res-type>javax.sql.DataSource</res-type>  
+		<res-auth>Container</res-auth>  
+	</resource-ref>  
+     -->
+     
+</web-app>

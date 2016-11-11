@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false">
+
+	<diskStore path="java.io.tmpdir/ehcache-hibernate" />
+
+	<!--
+		DefaultCache setting.
+		Modify ehcache-safe.xml for timeToIdleSeconds,timeToLiveSecond,diskExpiryThreadIntervalSeconds
+		Use ehcache-safe.xml default for maxElementsInMemory,maxElementsOnDisk,overflowToDisk,eternal Use ehcache default
+		for memoryStoreEvictionPolicy,diskPersistent,.
+	-->
+	<defaultCache maxElementsInMemory="10000" overflowToDisk="true" eternal="false"
+		memoryStoreEvictionPolicy="LRU" maxElementsOnDisk="10000000" diskExpiryThreadIntervalSeconds="600"
+		timeToIdleSeconds="3600" timeToLiveSeconds="100000" diskPersistent="false" />
+    <!-- query cache设置为true将会创建两个缓存区域 -->
+    <!-- 一个用于保存查询结果集 -->
+	<cache name="org.hibernate.cache.StandardQueryCache" maxElementsInMemory="5" eternal="false"
+	    timeToLiveSeconds="120" overflowToDisk="false"/>
+	<!-- 另一个用于保存最近查询的一系列表的时间戳 -->
+	<cache name="org.hibernate.cache.UpdateTimestampsCache" maxElementsInMemory="5000" 
+        eternal="true" overflowToDisk="true"/>
+        
+    <!-- base-->		
+	<cache 
+		name="com.eryansky.entity.base"
+		maxElementsInMemory="1000" 
+		eternal="true" 
+		overflowToDisk="true"
+		maxElementsOnDisk="10000" />
+	<!-- sys -->
+	<cache 
+		name="com.eryansky.entity.sys"
+		maxElementsInMemory="1000" 
+		eternal="true" 
+		overflowToDisk="true"
+		maxElementsOnDisk="10000" />
+	<!-- Special objects setting. -->
+	<!-- base -->
+	<!-- 
+	<cache name="com.eryansky.entity.base.User" maxElementsInMemory="1000"
+		memoryStoreEvictionPolicy="LRU" eternal="true" diskPersistent="false"
+		overflowToDisk="true" maxElementsOnDisk="100000" />
+	<cache name="com.eryansky.entity.base.User.roles"
+		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
+		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="1000000" />
+
+	<cache name="com.eryansky.entity.base.Resourceurce" maxElementsInMemory="1000"
+		memoryStoreEvictionPolicy="LRU" eternal="true" diskPersistent="false"
+		overflowToDisk="true" maxElementsOnDisk="100000" />
+	<cache name="com.eryansky.entity.base.Resourceurce.roles" maxElementsInMemory="1000"
+		memoryStoreEvictionPolicy="LRU" eternal="true" diskPersistent="false"
+		overflowToDisk="true" maxElementsOnDisk="100000" />
+	<cache name="com.eryansky.entity.base.Role" maxElementsInMemory="1000"
+		memoryStoreEvictionPolicy="LRU" eternal="true" diskPersistent="false"
+		overflowToDisk="true" maxElementsOnDisk="100000" />
+	<cache name="com.eryansky.entity.base.Role.users"
+		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
+		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="100000" />
+	<cache name="resourcesrces"
+		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
+		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="100000" />
+    <cache name="com.eryansky.entity.base.Resource"
+		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
+		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="100000" />
+	<cache name="com.eryansky.entity.base.User.organs"
+		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
+		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="100000" />
+	<cache name="com.eryansky.entity.base.Organ.users"
+		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
+		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="100000" />
+	<cache name="com.eryansky.entity.base.Role.permissions"
+		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
+		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="100000" />
+	 -->	
+
+
+
+	<!-- sys -->
+	<!-- 
+	<cache name="com.eryansky.entity.sys.Dictionary"
+		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
+		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="100000" />
+	<cache name="com.eryansky.entity.sys.Dictionary.subDictionarys"
+		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
+		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="100000" />
+    <cache name="com.eryansky.entity.sys.DictionaryType"
+		maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="true"
+		diskPersistent="false" overflowToDisk="true" maxElementsOnDisk="100000" />
+ -->
+
+</ehcache>

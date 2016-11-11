@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN" 
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+
+    <!-- 开发模式 -->
+    <constant name="struts.devMode" value="false" />
+
+    <!-- 国际化 -->
+    <constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="struts.configuration.xml.reload" value="true" />
+
+    <!-- 确保Spring的自动装配策略总是被考虑 -->
+	<constant name="struts.objectFactory.spring.autoWire.alwaysRespect" value="true" />
+	<!-- 允许标签使用静态方法 -->
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
+	<!-- 文件上传大小限制（KB） 2M：2097152=2*1024*1024 -->
+    <constant name="struts.multipart.maxSize" value="2097152"/>
+    
+    <!-- 开启动态方法调用 -->  
+    <constant name="struts.enable.DynamicMethodInvocation" value="true" />
+    
+    <!-- 使用Convention插件,实现约定大于配置的零配置文件风格. 特殊的Result路径在Action类中使用@Result设定. -->
+     
+	<!-- 指定默认的父包 -->
+	<constant name="struts.convention.default.parent.package" value="default" />
+	<!-- 设置convention插件默认的根包 -->
+	<constant name="struts.convention.package.locators" value="action,web,common" />
+	<!-- 搜索视图资源的路径 jsp路径 -->
+	<constant name="struts.convention.result.path" value="/WEB-INF/jsp/"/>
+	<!-- Action类名分隔符 -->
+	<constant name="struts.convention.action.name.separator" value="-" />
+	<!-- 搜索此配置下的所有包 -->
+	<constant name="struts.convention.package.locators.basePackage" value="com.eryansky.web" />
+    
+	<!-- 继承convention-default包，定义一个默认的拦截器，根据需要还可扩展 -->
+	<package name="default" extends="convention-default">
+		<interceptors>
+			<!-- 表单输入特殊字符Html转译、敏感词汇转译拦截器 -->
+			<interceptor name="inputReplaceInterceptor" class="com.eryansky.common.web.struts2.interceptor.InputReplaceInterceptor" />
+			<!-- 登录验证拦截器 -->
+			<interceptor name="authority" class="com.eryansky.core.AuthorityInterceptor" />
+			<!-- 异常处理拦截器 -->
+			<interceptor name="exceptionAuthority" class="com.eryansky.common.web.struts2.interceptor.ExceptionInterceptor" />
+			<interceptor-stack name="crudStack">
+				<!--<interceptor-ref name="inputReplaceInterceptor" /> -->
+				<!-- 将登录验证拦截器加入默认的拦截器栈中 -->
+				<interceptor-ref name="authority">
+					<param name="excludeMethods">welcome,login</param>
+				</interceptor-ref>
+				<interceptor-ref name="exceptionAuthority" />
+				<interceptor-ref name="paramsPrepareParamsStack" />
+			</interceptor-stack>
+			
+			<!-- url param定义拦截器  -->
+			<interceptor name="urlParamsInterceptor" class="com.eryansky.common.web.struts2.interceptor.UrlParamsInterceptor" />
+		</interceptors>
+		<default-interceptor-ref name="crudStack" />
+		
+		<global-results>
+		    <result name="login" type="redirect">/jump.jsp</result>
+            <result name="noauthority" type="redirect">/common/403.jsp</result>
+        </global-results>
+        
+        
+        <action name="fileRedirect" class="com.eryansky.common.web.struts2.FileRedirectAction" method="redirect"></action>
+	</package>
+	
+</struts>
